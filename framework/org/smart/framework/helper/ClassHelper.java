@@ -64,6 +64,7 @@ public final class ClassHelper {
 		Set<Class<?>> beanClassSet = new HashSet<Class<?>>();
 		beanClassSet.addAll(getServiceClassSet());
 		beanClassSet.addAll(getControllerClassSet());
+//		beanClassSet.addAll(getInterfaceClassSet());
 		return beanClassSet;
 		
 	}
