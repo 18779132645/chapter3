@@ -28,15 +28,18 @@ public class test {
 	
 	@Action(value = "get:/indexss")
 	public View index(Param param){
-		bookService.test();
-		StudentServiceImpl.getStudent();
+		System.err.println(param.getRequest());
+		System.err.println(param.getBoolean("a"));
+		System.err.println(param);
+//		bookService.test();
+//		StudentServiceImpl.getStudent();
 		return new View("MyJsp.jsp");
 	}
 	@Action(value = "get:/indexs")
 	public View indexs(Param param){
-		HttpServletRequest request = (HttpServletRequest) param.getMap().get("request");
-		System.err.println(request);
-//		System.err.println(StudentServiceImpl);
+		System.err.println(param.getRequest());
+		System.err.println(param.getBoolean("a"));
+		System.err.println(param);	
 		Map<String, String> mp = new HashMap<String, String>();
 		mp.put("list", "成功表表表表表表");
 		List<Student> list = new ArrayList<Student>();
