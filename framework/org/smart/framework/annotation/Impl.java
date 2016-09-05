@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 服务类注解
+ * 接口类注解
  * @author HP
  *
  */
@@ -14,5 +14,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Impl {
 
+	/**
+	 * 注解内容,实现该类的类名
+	 * @return
+	 */
 	public abstract Class<?> value();
 }

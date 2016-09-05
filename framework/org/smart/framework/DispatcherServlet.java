@@ -2,7 +2,6 @@ package org.smart.framework;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,15 +19,16 @@ import org.smart.framework.bean.Data;
 import org.smart.framework.bean.Handler;
 import org.smart.framework.bean.Param;
 import org.smart.framework.bean.View;
-import org.smart.framework.helper.BeanHelper;
 import org.smart.framework.helper.ConfigHelper;
 import org.smart.framework.helper.ControllerHelper;
+import org.smart.framework.helper.UploadHelper;
 import org.smart.framework.util.ArrayUtil;
 import org.smart.framework.util.CodecUtil;
 import org.smart.framework.util.JsonUtil;
 import org.smart.framework.util.ReflectionUtil;
 import org.smart.framework.util.StreamUtil;
 import org.smart.framework.util.StringUtil;
+import org.smart.framework.util.WebUtil;
 
 /**
  * 请求转发器
@@ -40,11 +40,16 @@ public class DispatcherServlet extends HttpServlet {
 
 	public void init(ServletConfig servletConfig) throws ServletException{
 		HelperLoader.init();
+		
 		ServletContext servletContext = servletConfig.getServletContext();
+		
 		ServletRegistration jspServlet = servletContext.getServletRegistration("jsp");
 		jspServlet.addMapping(ConfigHelper.getAppJspPath() + "*");
+		
 		ServletRegistration defaultServlet = servletContext.getServletRegistration("default");
 		defaultServlet.addMapping(ConfigHelper.getAppAssetPath() + "*");
+		
+		UploadHelper.init(servletContext);
 	}
 	
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -52,6 +57,10 @@ public class DispatcherServlet extends HttpServlet {
 		//获取请求方法与路径
 		String requestMethod = request.getMethod().toLowerCase();
 		String requestPath = request.getPathInfo();
+		
+		if(requestPath.equals("/favicon.ico")){
+			return;
+		}
 		//获取ACTION处理器
 		Handler handler = ControllerHelper.getHandler(requestMethod, requestPath);
 		if(handler != null){
@@ -82,31 +91,34 @@ public class DispatcherServlet extends HttpServlet {
 			Param param = new Param(paramMap);
 			Object result = ReflectionUtil.invokeMethod(handler, param);
 			if(result instanceof View){
-				View view = (View) result;
-				String path = view.getPath();
-				if(StringUtil.isNotEmpty(path)){
-					if(path.startsWith("/")){
-						response.sendRedirect(request.getContextPath() + path);
-					}else{
-						Map<String, Object> model = view.getModel();
-						for(Map.Entry<String, Object>entry : model.entrySet()){
-							request.setAttribute(entry.getKey(), entry.getValue());
-						}
-						request.getRequestDispatcher(ConfigHelper.getAppJspPath() + path).forward(request, response);
-					}
-				}
+				handleViewResult((View) result, request, response);
 			}else if(result instanceof Data){
-				Data data = (Data) result;
-				Object model = data.getModel();
-				if(model != null){
-					response.setContentType("applicatioin/json");
-					response.setCharacterEncoding("UTF-8");
-					PrintWriter writer = response.getWriter();
-					writer.write(JsonUtil.toJson(model));
-					writer.flush();
-					writer.close();
-				}
+				handleDataResult((Data) result, request, response);
 			}
+		}
+	}
+	
+	private void handleViewResult(View view, HttpServletRequest request, HttpServletResponse response) 
+	throws IOException, ServletException{
+		String path = view.getPath();
+		if(StringUtil.isNotEmpty(path)){
+			if(path.startsWith("/")){
+				WebUtil.redirectRequest(ConfigHelper.getAppJspPath() + path.substring(1,path.length()), request, response);
+			}else{
+				Map<String, Object> model = view.getModel();
+				for(Map.Entry<String, Object>entry : model.entrySet()){
+					request.setAttribute(entry.getKey(), entry.getValue());
+				}
+				WebUtil.forwardRequest(ConfigHelper.getAppJspPath() + path, request, response);
+			}
+		}
+	}
+	
+	private void handleDataResult(Data data, HttpServletRequest request, HttpServletResponse response)
+	throws IOException, ServletException{
+		Object model = data.getModel();
+		if(model != null){
+			WebUtil.writeHTML(response, model);
 		}
 	}
 }

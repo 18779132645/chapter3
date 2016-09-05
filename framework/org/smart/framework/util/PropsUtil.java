@@ -3,18 +3,26 @@ package org.smart.framework.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 属性文件工具类
+ * @author HP
+ *
+ */
 public class PropsUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(PropsUtil.class);
 
+	/**
+	 * 加载属性文件   load properties file
+	 * @param propsPath
+	 * @return
+	 */
 	  public static Properties loadProps(String propsPath)
 	  {
 	    Properties props = new Properties();
@@ -56,6 +64,12 @@ public class PropsUtil {
 	    return map;
 	  }
 
+	  /**
+	   * 获取字符型属性 (默认值为空字符串)
+	   * @param props
+	   * @param key
+	   * @return
+	   */
 	  public static String getString(Properties props, String key)
 	  {
 	    String value = "";
@@ -65,6 +79,13 @@ public class PropsUtil {
 	    return value;
 	  }
 
+	  /**
+	   * 获取字符串型(可指定默认值)
+	   * @param props
+	   * @param key
+	   * @param defalutValue
+	   * @return
+	   */
 	  public static String getString(Properties props, String key, String defalutValue)
 	  {
 	    String value = defalutValue;
@@ -74,6 +95,12 @@ public class PropsUtil {
 	    return value;
 	  }
 
+	  /**
+	   * 获取数字型属性 (默认值为0)
+	   * @param props
+	   * @param key
+	   * @return
+	   */
 	  public static int getNumber(Properties props, String key)
 	  {
 	    int value = 0;
@@ -83,6 +110,13 @@ public class PropsUtil {
 	    return value;
 	  }
 
+	  /**
+	   * 获取数字型属性 (可指定默认值)
+	   * @param props
+	   * @param key
+	   * @param defaultValue
+	   * @return
+	   */
 	  public static int getNumber(Properties props, String key, int defaultValue)
 	  {
 	    int value = defaultValue;
@@ -92,11 +126,24 @@ public class PropsUtil {
 	    return value;
 	  }
 
+	  /**
+	   * 获取布尔型属性 (默认值为 false)
+	   * @param props
+	   * @param key
+	   * @return
+	   */
 	  public static boolean getBoolean(Properties props, String key)
 	  {
 	    return getBoolean(props, key, false);
 	  }
 
+	  /**
+	   * 获取布尔型属性 (可指定默认值)
+	   * @param props
+	   * @param key
+	   * @param defalutValue
+	   * @return
+	   */
 	  public static boolean getBoolean(Properties props, String key, boolean defalutValue)
 	  {
 	    boolean value = defalutValue;
@@ -105,7 +152,7 @@ public class PropsUtil {
 	    }
 	    return value;
 	  }
-
+	  
 //	  public static Map<String, Object> getMap(Properties props, String prefix)
 //	  {
 //	    Map kvMap = new LinkedHashMap();
