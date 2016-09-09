@@ -11,7 +11,7 @@ import org.smart.framework.util.ReflectionUtil;
  * @author HP
  *
  */
-public class BeanHelper {
+public final class BeanHelper {
 
 	/**
 	 * 定义 Bean 映射(用于存放 Bean 类与 Bean 实例的映射关系)

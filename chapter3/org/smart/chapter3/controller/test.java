@@ -8,26 +8,30 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.page.util.ChartReturnData;
 import org.page.util.Chart_PageUtil;
 import org.page.util.Chart_Tools;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.smart.chapter3.bean.Filetype;
 import org.smart.chapter3.bean.Student;
 import org.smart.chapter3.service.BookService;
 import org.smart.chapter3.service.impl.StudentServiceImpl;
 import org.smart.chapter3.util.ChartWeb;
 import org.smart.framework.annotation.Action;
+import org.smart.framework.annotation.Aspect;
 import org.smart.framework.annotation.Controller;
 import org.smart.framework.annotation.Inject;
 import org.smart.framework.bean.Data;
+import org.smart.framework.bean.FileParam;
 import org.smart.framework.bean.Param;
 import org.smart.framework.bean.View;
+import org.smart.framework.helper.ServletHelper;
+import org.smart.framework.helper.UploadHelper;
+import org.smart.framework.proxy.AspectProxy;
+import org.smart.framework.util.CodecUtil;
+import org.smart.framework.util.WebUtil;
 
 @Controller
-public class test {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(test.class);
+@Aspect(Controller.class)
+public class test extends AspectProxy{
 	
 	@Inject
 	private StudentServiceImpl StudentServiceImpl;
@@ -37,14 +41,32 @@ public class test {
 	
 	@Action(value = "get:/indexss")
 	public View index(Param param){
-		StudentServiceImpl.getVoid();
-//		bookService.test();
-//		StudentServiceImpl.getStudent();
-		return new View("MyJsp.jsp");
+//		StudentServiceImpl.getVoid();
+		System.err.println("redirect:indexs");
+//		return new View("redirect:/MyJsp.jsp");
+//		return new View("redirect:indexs");
+//		return new View("redirect:indexs?aa=90");
+		return new View("redirect:indexs?aa=90");
 	}
+	
+	@Action(value = "get:/down")
+	public void downloadFile(Param param){
+		HttpServletRequest request = ServletHelper.getRequest();
+		HttpServletResponse response = ServletHelper.getResponse();
+		String realPath = request.getRealPath(request.getServerName());
+		realPath = realPath.substring(0,realPath.lastIndexOf("\\"));
+		WebUtil.downloadFile(response, realPath+"/file/111.iso");
+	}
+	
 	@Action(value = "get:/indexs")
 	public View indexs(Param param){
-		StudentServiceImpl.getStudent();
+		Student students = new Student();
+		try {
+			students = StudentServiceImpl.getStudents();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		System.err.println(students.getId());
 		Map<String, String> mp = new HashMap<String, String>();
 		mp.put("list", "成功表表表表表表");
 		List<Student> list = new ArrayList<Student>();
@@ -77,15 +99,25 @@ public class test {
 		return new Data(list);
 	}
 	
-	@Action(value = "get:/str")
-	public Data getDataStr(Param param){
-		return new Data("success");
+	@Action(value = "post:/load")
+	public View getDataStr(Param param){
+		try {
+			FileParam fileParam = param.getFile("upfile");
+			HttpServletRequest request = ServletHelper.getRequest();
+			String realPath = request.getRealPath(request.getServerName());
+			realPath = realPath.substring(0,realPath.lastIndexOf("\\"));
+			fileParam.setFileName("11111.txt");
+			UploadHelper.uploadFile(realPath + "\\file\\", fileParam);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return new View("redirect:indexss");
 	}
 	
 	@Action(value = "POST:/chart")
 	public Data getChart(Param param){
-		HttpServletRequest request = param.getRequest();
-		HttpServletResponse response = param.getResponse();
+		HttpServletRequest request = ServletHelper.getRequest();
+		HttpServletResponse response = ServletHelper.getResponse();
 		String temp = "";
 		try {  
 			String[][] configure = new String[12][2];
@@ -104,7 +136,6 @@ public class test {
 
 			if(ChartWeb.GetInitSide(request,response,configure)){
 				temp = ChartWeb.GetPageDisplayText("<%chart_config%>", "<%chart_br%>").toString()+"<%chart_table%>"+Chart_Tools.GetStringForArray(configure,"<%chart_config%>","<%chart_br%>").toString();
-				System.err.println(temp);
 				return new Data(temp);
 			}
 			int[] page = Chart_PageUtil.chart_createPage(request, StudentServiceImpl.getCount());

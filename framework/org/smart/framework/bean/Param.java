@@ -123,7 +123,7 @@ public class Param {
 	 * @return
 	 */
 	public long getLong(String name){
-		return CastUtil.castLong(paramMap.get(name));
+		return CastUtil.castLong(getFieldMap().get(name));
 	}
 	
 	/**
@@ -132,7 +132,7 @@ public class Param {
 	 * @return
 	 */
 	public int getInt(String name){
-		return CastUtil.castInt(paramMap.get(name));
+		return CastUtil.castInt(getFieldMap().get(name));
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class Param {
 	 * @return
 	 */
 	public Double getDouble(String name){
-		return CastUtil.castDouble(paramMap.get(name));
+		return CastUtil.castDouble(getFieldMap().get(name));
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class Param {
 	 * @return
 	 */
 	public boolean getBoolean(String name){
-		return CastUtil.castBoolean(paramMap.get(name));
+		return CastUtil.castBoolean(getFieldMap().get(name));
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class Param {
 	 * @return
 	 */
 	public HttpServletRequest getRequest(){
-		return (HttpServletRequest) paramMap.get("request");
+		return (HttpServletRequest) getFieldMap().get("request");
 	}
 	
 	/**
@@ -166,7 +166,7 @@ public class Param {
 	 * @return
 	 */
 	public HttpServletResponse getResponse(){
-		return (HttpServletResponse) paramMap.get("response");
+		return (HttpServletResponse) getFieldMap().get("response");
 	}
 	
 	/**
@@ -174,6 +174,6 @@ public class Param {
 	 * @return
 	 */
 	public Map<String, Object> getMap(){
-		return paramMap;
+		return getFieldMap();
 	}
 }

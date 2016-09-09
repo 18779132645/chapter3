@@ -5,12 +5,14 @@ import java.util.Properties;
 import org.smart.framework.ConfigConstant;
 import org.smart.framework.util.PropsUtil;
 
+import com.sun.corba.se.impl.orb.ORBConfiguratorImpl.ConfigParser;
+
 /**
  * 属性文件助手类
  * @author HP
  *
  */
-public class ConfigHelper {
+public final class ConfigHelper {
 
 	private static final Properties CONFIG_PROPS = PropsUtil.loadProps(ConfigConstant.CONFIG_FILE);
 	
@@ -76,6 +78,21 @@ public class ConfigHelper {
 	 */
 	public static int getAppUploadLimit(){
 		return PropsUtil.getNumber(CONFIG_PROPS, ConfigConstant.APP_UPLOAD_LIMIT, 10);
+	}
+	
+	/**
+	 * 获取应用项目的默认文件
+	 * @return
+	 */
+	public static String getAppDefaultPage(){
+		return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.APP_DEFAULT_PAGE);
+	}
+	/**
+	 * 获取项目编码
+	 * @return
+	 */
+	public static String getAppCoding(){
+		return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.App_Coding);
 	}
 }
 

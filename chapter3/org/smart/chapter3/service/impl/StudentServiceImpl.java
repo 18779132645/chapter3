@@ -2,16 +2,18 @@ package org.smart.chapter3.service.impl;
 
 import java.util.List;
 
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.smart.chapter3.bean.Filetype;
 import org.smart.chapter3.bean.Student;
 import org.smart.chapter3.dto.ResourceFile;
+import org.smart.framework.annotation.Aspect;
 import org.smart.framework.annotation.Service;
 import org.smart.framework.annotation.Transaction;
 import org.smart.framework.helper.DatabaseHelper;
+import org.smart.framework.proxy.TransactionProxy;
 
 @Service
-public class StudentServiceImpl {
+@Aspect(Transaction.class)
+public class StudentServiceImpl extends TransactionProxy{
 
 	public void getVoid(){
 		List<ResourceFile> list1 = null;
@@ -29,42 +31,42 @@ public class StudentServiceImpl {
 	
 	public int getCount(){
 		String sql = "SELECT count(*) FROM resource ";
-		return DatabaseHelper.queryCount(sql, null);
+		return (int) DatabaseHelper.queryCount(sql, null);
 	}
+	@Transaction
 	public String[][] getResult(int[] page){
 		String sql = "SELECT id,ResourceName,Letters,ResourceTypeID,ResourceClassID,SavePath FROM resource limit "+page[0]+","+(page[1]-page[0]);
+		try {
+			System.err.println(8/0);
+		} catch (Exception e) {
+			// TODO: handle exception
+//			throw new RuntimeException(e);
+		}
 		return DatabaseHelper.queryEntityArrays(sql, 2, null);
 	}
 	
 	@Transaction
-	public Student getStudent() {
-		try {
-			String[] result = DatabaseHelper.queryEntityArray(" SELECT * FROM filetype limit 1", null);
-			for(int i=0; i<result.length; i++){
-				System.err.print(result[i]+"   ");
-			}
-			System.err.println();
-			System.err.println("------------------------");
-			String[][] results = DatabaseHelper.queryEntityArrays(" SELECT * FROM filetype limit 10",3, null);
-			for(int i=0; i<results.length; i++){
-				for(int j=0; j<results[i].length; j++){
-					System.err.print(results[i][j]+"   ");
-				}
-				System.err.println();
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		
-		List<Filetype> list = null;
-		try {
-			list = DatabaseHelper.queryEntityList(Filetype.class, " SELECT * FROM filetype ", null);
-			System.err.println("filetype:"+list.size());
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
+	public Student getStudents() {
+//		try {
+//			String[] result = DatabaseHelper.queryEntityArray(" SELECT * FROM filetype limit 1", null);
+//			String[][] results = DatabaseHelper.queryEntityArrays(" SELECT * FROM filetype limit 10",3, null);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//		
+//		List<Filetype> list = null;
+//		try {
+//			list = DatabaseHelper.queryEntityList(Filetype.class, " SELECT * FROM filetype ", null);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+		Student student = new Student();
+		String sql = "INSERT INTO `filetype` (`typeName`) VALUESs ('ppssÎÄ¼þ')";
+		DatabaseHelper.deleteEntity(Filetype.class,40);
+		DatabaseHelper.executeUpdate(sql, null);
+		student.setId(100);
 		return new Student();
 	}
 

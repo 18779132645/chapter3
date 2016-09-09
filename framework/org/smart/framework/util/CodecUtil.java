@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smart.framework.helper.ConfigHelper;
 
 /**
  * 编码与解码操作工具类
@@ -23,7 +24,7 @@ public final class CodecUtil {
 	public static String encodeURL(String source){
 		String target;
 		try {
-			target = URLEncoder.encode(source, "UTF-8");
+			target = URLEncoder.encode(source, ConfigHelper.getAppCoding());
 		} catch (Exception e) {
 			// TODO: handle exception
 			LOGGER.error("encode url failure", e);
@@ -40,7 +41,7 @@ public final class CodecUtil {
 	public static String decodeURL(String source){
 		String target;
 		try {
-			target = URLDecoder.decode(source, "UTF-8");
+			target = URLDecoder.decode(source, ConfigHelper.getAppCoding());
 		} catch (Exception e) {
 			// TODO: handle exception
 			LOGGER.error("decode url failure", e);

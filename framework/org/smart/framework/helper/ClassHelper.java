@@ -84,7 +84,7 @@ public final class ClassHelper {
 		Set<Class<?>> classSet = new HashSet<Class<?>>();
 		for(Class<?> cls : CLASS_SET){
 			if(cls.isAnnotationPresent(annotationClass)){
-				CLASS_SET.add(cls);
+				classSet.add(cls);
 			}
 		}
 		return classSet;

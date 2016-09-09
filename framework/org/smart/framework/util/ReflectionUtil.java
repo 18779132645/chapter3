@@ -42,10 +42,11 @@ public final class ReflectionUtil {
 	 * @param args
 	 * @return
 	 */
-	public static Object invokeMethod(Handler handler, Param param){
+	public static Object invokeMethod(Object obj, Method method, Object...objects){
 		Object result = null;
 		try {
-            result = handler.getActionMethod().invoke(BeanHelper.getBean(handler.getControllerClass()), param);
+			method.setAccessible(true);
+			result = method.invoke(obj, objects);
 		} catch (Exception e) {
 			// TODO: handle exception
 			LOGGER.error("invoke method failure", e);

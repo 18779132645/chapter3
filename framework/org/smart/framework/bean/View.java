@@ -46,6 +46,10 @@ public class View {
 		this.model = model;
 	}
 	
+	public boolean isRedirect(){
+		return this.path.startsWith("/");
+	}
+	
 	
 	
 }
