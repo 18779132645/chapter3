@@ -92,7 +92,7 @@ public final class ConfigHelper {
 	 * @return
 	 */
 	public static String getAppCoding(){
-		return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.App_Coding);
+		return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.App_Coding, "UTF-8");
 	}
 }
 

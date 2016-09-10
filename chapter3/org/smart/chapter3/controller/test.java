@@ -12,9 +12,11 @@ import org.page.util.Chart_PageUtil;
 import org.page.util.Chart_Tools;
 import org.smart.chapter3.bean.Filetype;
 import org.smart.chapter3.bean.Student;
+import org.smart.chapter3.bean.TestSmart;
 import org.smart.chapter3.service.BookService;
 import org.smart.chapter3.service.impl.StudentServiceImpl;
 import org.smart.chapter3.util.ChartWeb;
+import org.smart.chapter3.util.Sql;
 import org.smart.framework.annotation.Action;
 import org.smart.framework.annotation.Aspect;
 import org.smart.framework.annotation.Controller;
@@ -66,7 +68,6 @@ public class test extends AspectProxy{
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		System.err.println(students.getId());
 		Map<String, String> mp = new HashMap<String, String>();
 		mp.put("list", "成功表表表表表表");
 		List<Student> list = new ArrayList<Student>();
@@ -145,5 +146,12 @@ public class test extends AspectProxy{
 			e.printStackTrace();
 		}
 		return new Data(temp);
+	}
+	
+	@Action(value = "POST:/getform")
+	public Data getform(Param param, Filetype filetype){
+		System.err.println(param.getInt("id"));
+		System.err.println(param.getString("typeName"));
+		return new Data("success");
 	}
 }

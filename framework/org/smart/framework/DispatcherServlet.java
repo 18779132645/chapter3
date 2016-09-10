@@ -1,7 +1,10 @@
 package org.smart.framework;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smart.chapter3.bean.Filetype;
 import org.smart.framework.bean.Data;
 import org.smart.framework.bean.Handler;
 import org.smart.framework.bean.Param;
@@ -83,15 +87,22 @@ public class DispatcherServlet extends HttpServlet {
 				}else{
 					param = RequestHelper.createParam(request);
 				}
+				Method actionMethods = handler.getActionMethod();
+				Class<?>[] CLASS_SET = actionMethods.getParameterTypes();
+				Object[] obj = new Object[actionMethods.getParameterTypes().length];
+				for(int i=0; i<CLASS_SET.length; i++){
+					if(CLASS_SET[i].getName().endsWith("Param")){
+						obj[i] = param;
+					}else{
+						obj[i] = new Filetype();
+					}
+				}
+				for(int i=0; i<obj.length; i++){
+					System.err.println(obj[i]);
+				}
 				
-				Object result = ReflectionUtil.invokeMethod(controllerBean, handler.getActionMethod(), param);
-				
+				Object result = ReflectionUtil.invokeMethod(controllerBean, handler.getActionMethod(), obj);
 				handleActionMethodReturn(request, response, result);
-//				if(result instanceof Data){
-//					handleDataResult((Data)result, request, response);
-//				}else if(result instanceof View){
-//					handleViewResult((View)result, request, response);
-//				}
 			}else{
 				WebUtil.sendError(404, "", response);
 				return;
@@ -134,35 +145,6 @@ public class DispatcherServlet extends HttpServlet {
 					}
 				}
 			}
-		}
-	}
-	
-	private void handleViewResult(View view, HttpServletRequest request, HttpServletResponse response) 
-	throws IOException, ServletException{
-		String path = view.getPath();
-		if(StringUtil.isNotEmpty(path)){
-			if(path.startsWith("redirect:")){
-				path = path.substring(9, path.length());
-				if(path.startsWith("/")){
-					WebUtil.redirectRequest(ConfigHelper.getAppJspPath() + path.substring(1,path.length()), request, response);
-				}else{
-					WebUtil.forwardRequest(path, request, response);
-				}
-			}else{
-				Map<String, Object> model = view.getModel();
-				for(Map.Entry<String, Object>entry : model.entrySet()){
-					request.setAttribute(entry.getKey(), entry.getValue());
-				}
-				WebUtil.forwardRequest(ConfigHelper.getAppJspPath() + path, request, response);
-			}
-		}
-	}
-	
-	private void handleDataResult(Data data, HttpServletRequest request, HttpServletResponse response)
-	throws IOException, ServletException{
-		Object model = data.getModel();
-		if(model != null){
-			WebUtil.writeHTML(response, model);
 		}
 	}
 	

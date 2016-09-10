@@ -62,11 +62,11 @@ public class StudentServiceImpl extends TransactionProxy{
 //			// TODO: handle exception
 //			e.printStackTrace();
 //		}
-		Student student = new Student();
-		String sql = "INSERT INTO `filetype` (`typeName`) VALUESs ('ppss文件')";
-		DatabaseHelper.deleteEntity(Filetype.class,40);
-		DatabaseHelper.executeUpdate(sql, null);
-		student.setId(100);
+//		Student student = new Student();
+//		String sql = "INSERT INTO `filetype` (`typeName`) VALUESs ('ppss文件')";
+//		DatabaseHelper.deleteEntity(Filetype.class,40);
+//		DatabaseHelper.executeUpdate(sql, null);
+//		student.setId(100);
 		return new Student();
 	}
 
